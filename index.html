@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyroball Infinite</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            font-family: 'Arial', sans-serif;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .ui-element {
+            pointer-events: auto;
+        }
+
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #00ffff;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        #gameOverScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 20px #00ffff;
+            display: none;
+        }
+
+        #menuScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        .game-button {
+            background: rgba(0, 255, 255, 0.2);
+            border: 2px solid #00ffff;
+            color: #ffffff;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .game-button:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 15px #00ffff;
+        }
+
+        #touchControls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .touch-button {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            text-align: center;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui">
+        <div id="score">Score: 0</div>
+
+        <div id="menuScreen" class="ui-element">
+            <h1 style="color: #00ffff; text-shadow: 0 0 20px #00ffff; margin: 0 0 10px;">GYROBALL</h1>
+            <h2 style="color: #ffffff; margin: 0 0 20px; font-size: 16px; letter-spacing: 4px;">INFINITE</h2>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Survive as long as you can!</p>
+            <button id="startButton" class="game-button">PLAY</button>
+            <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 15px;">Arrow keys / WASD to move &bull; Space to jump &bull; M to toggle music</p>
+        </div>
+
+        <div id="gameOverScreen" class="ui-element">
+            <h2 style="color: #ff4444; text-shadow: 0 0 20px #ff4444; margin: 0 0 20px;">GAME OVER</h2>
+            <p id="finalScore" style="font-size: 22px; margin: 5px 0;">Score: 0</p>
+            <p id="finalBest" style="font-size: 16px; color: #00ffff; margin: 5px 0 20px;">Best: 0</p>
+            <button id="restartButton" class="game-button">PLAY AGAIN</button>
+            <button id="menuButton" class="game-button">MENU</button>
+        </div>
+
+        <div id="touchControls" class="ui-element">
+            <div id="leftButton" class="touch-button">&#8592;</div>
+            <div id="rightButton" class="touch-button">&#8594;</div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "gyroball-infinite",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.168.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.168.0",
+    "typescript": "^5.0.2",
+    "vite": "^5.0.8"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
