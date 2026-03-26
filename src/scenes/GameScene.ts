@@ -210,7 +210,6 @@ export class GameScene extends BaseScene {
         if (this.scoreTimer >= 0.5) {
             this.scoreTimer = 0;
             this.engine.addScore(1);
-            this.engine.getAudioManager().playScore();
         }
 
         // Camera follows ball horizontally (smooth)
@@ -219,7 +218,7 @@ export class GameScene extends BaseScene {
 
         // Death
         if (this.ball.position.y < -10) {
-            this.engine.getAudioManager().playDeath();
+            this.engine.getAudioManager().playFall();
             this.engine.changeState('GAME_OVER');
         }
     }

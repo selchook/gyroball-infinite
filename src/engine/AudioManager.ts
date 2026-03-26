@@ -109,6 +109,40 @@ export class AudioManager {
         });
     }
 
+    async playFall(): Promise<void> {
+        await this.ensureAudioContext();
+        // Descending whoosh: pitch sweeps down rapidly, then a thud
+        const osc = this.audioContext.createOscillator();
+        const gain = this.audioContext.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(600, this.audioContext.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, this.audioContext.currentTime + 0.6);
+
+        gain.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+        gain.gain.linearRampToValueAtTime(0.5, this.audioContext.currentTime + 0.5);
+        gain.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.8);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGain);
+
+        this.activeOscillators.add(osc);
+        osc.start(this.audioContext.currentTime);
+        osc.stop(this.audioContext.currentTime + 0.8);
+        osc.onended = () => { this.activeOscillators.delete(osc); };
+
+        // Short low thud at end
+        setTimeout(() => {
+            this.playSoundEffect({
+                frequency: 80,
+                duration: 0.25,
+                type: 'sine',
+                volume: 0.4,
+                fadeOut: true
+            });
+        }, 500);
+    }
+
     async playMove(): Promise<void> {
         await this.playSoundEffect({
             frequency: 400,
@@ -135,47 +169,7 @@ export class AudioManager {
     }
 
     async startBackgroundMusic(): Promise<void> {
-        await this.ensureAudioContext();
-        this.stopBackgroundMusic();
-        
-        // Create a simple ambient background loop
-        const createTone = (frequency: number, delay: number) => {
-            const oscillator = this.audioContext.createOscillator();
-            const gainNode = this.audioContext.createGain();
-            const filter = this.audioContext.createBiquadFilter();
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-            
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(1000, this.audioContext.currentTime);
-            
-            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime + delay);
-            gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + delay + 0.5);
-            gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + delay + 4);
-            
-            oscillator.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(this.musicGain);
-            
-            this.musicNodes.push(oscillator, gainNode, filter);
-            
-            oscillator.start(this.audioContext.currentTime + delay);
-            oscillator.stop(this.audioContext.currentTime + delay + 4);
-            
-            // Loop
-            setTimeout(() => {
-                if (this.musicNodes.includes(oscillator)) {
-                    createTone(frequency, 0);
-                }
-            }, (delay + 4) * 1000);
-        };
-        
-        // Create ambient drone
-        const frequencies = [100, 150, 200, 250];
-        frequencies.forEach((freq, i) => {
-            createTone(freq, i * 0.5);
-        });
+        // Background music disabled
     }
 
     stopBackgroundMusic(): void {
