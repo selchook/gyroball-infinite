@@ -49,6 +49,39 @@ export class GameScene extends BaseScene {
         this.setupScene();
     }
 
+    private showScorePopup(worldPos: THREE.Vector3, color: THREE.Color): void {
+        const canvas = this.engine.getRenderer().domElement;
+        const vec = worldPos.clone().project(this.camera);
+        const x = (vec.x * 0.5 + 0.5) * canvas.clientWidth;
+        const y = (-vec.y * 0.5 + 0.5) * canvas.clientHeight;
+
+        const el = document.createElement('div');
+        el.textContent = '+5';
+        el.style.cssText = [
+            'position:fixed',
+            `left:${x}px`,
+            `top:${y}px`,
+            'transform:translate(-50%,-50%)',
+            `color:#${color.getHexString()}`,
+            'font-size:28px',
+            'font-weight:900',
+            'font-family:monospace',
+            'pointer-events:none',
+            'text-shadow:0 0 8px #fff,0 0 16px currentColor',
+            'z-index:9999',
+            'transition:transform 0.7s ease-out,opacity 0.7s ease-out',
+        ].join(';');
+
+        document.body.appendChild(el);
+
+        requestAnimationFrame(() => {
+            el.style.transform = `translate(-50%, calc(-50% - 60px))`;
+            el.style.opacity = '0';
+        });
+
+        setTimeout(() => el.remove(), 750);
+    }
+
     private setupScene(): void {
         this.scene.fog = new THREE.Fog(0x000000, 20, 60);
 
@@ -179,6 +212,7 @@ export class GameScene extends BaseScene {
                     p.twinScored = true;
                     this.engine.addScore(5);
                     this.engine.getAudioManager().playPowerUp();
+                    this.showScorePopup(this.ball.position, p.color);
                 }
                 break;
             }
