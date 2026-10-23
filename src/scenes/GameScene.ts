@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { BaseScene } from './BaseScene';
 import { GameEngine } from '../engine/GameEngine';
+import { onPlatform } from '../ayvago/platform';
 
 interface Platform {
     mesh: THREE.Mesh;
@@ -35,6 +36,8 @@ export class GameScene extends BaseScene {
 
     private platformSpawnTimer = 0;
     private scoreTimer = 0;
+    // Best score when this run started, to detect a new personal best at game over.
+    private startingBest = 0;
 
     // All dynamic speeds derive from a single multiplier so they stay in sync
     private get speedMult(): number {
@@ -160,6 +163,8 @@ export class GameScene extends BaseScene {
         this.scoreTimer = 0;
         (this.ball.material as THREE.MeshPhongMaterial).color.copy(this.BASE_BALL_COLOR);
         this.engine.getAudioManager().startBackgroundMusic();
+        this.startingBest = this.engine.bestScore;
+        onPlatform((p) => p.gameplayStart());
     }
 
     exit(): void {
@@ -253,6 +258,12 @@ export class GameScene extends BaseScene {
         // Death
         if (this.ball.position.y < -10) {
             this.engine.getAudioManager().playFall();
+            const score = this.engine.score;
+            const newBest = score > this.startingBest;
+            onPlatform((p) => {
+                p.endGame({ score, won: false });
+                if (newBest) p.celebrate();
+            });
             this.engine.changeState('GAME_OVER');
         }
     }

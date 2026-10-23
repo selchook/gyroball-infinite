@@ -1,4 +1,5 @@
 import { GameEngine } from './engine/GameEngine';
+import { onPlatform } from './ayvago/platform';
 
 // Initialize the game engine
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
@@ -12,11 +13,26 @@ window.addEventListener('resize', () => {
     engine.handleResize();
 });
 
-// Handle visibility changes for performance
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
+// Pause while the page is hidden or the platform (Ayvago) asks; resume only when neither applies.
+let platformPaused = false;
+function syncPause(): void {
+    if (document.hidden || platformPaused) {
         engine.pause();
     } else {
         engine.resume();
     }
+}
+
+document.addEventListener('visibilitychange', syncPause);
+
+onPlatform((platform) => {
+    platform.onPause(() => {
+        platformPaused = true;
+        syncPause();
+    });
+    platform.onResume(() => {
+        platformPaused = false;
+        syncPause();
+    });
+    platform.onMute((muted) => engine.getAudioManager().setPlatformMuted(muted));
 });

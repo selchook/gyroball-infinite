@@ -12,6 +12,8 @@ export class AudioManager {
     private musicGain: GainNode;
     private sfxGain: GainNode;
     private isMuted: boolean = true; // Start muted
+    // Set by the platform (Ayvago); kept apart from the player's own M toggle.
+    private platformMuted: boolean = false;
     private musicNodes: AudioNode[] = [];
     private activeOscillators: Set<OscillatorNode> = new Set();
 
@@ -54,8 +56,13 @@ export class AudioManager {
         this.updateMuteState();
     }
 
+    setPlatformMuted(muted: boolean): void {
+        this.platformMuted = muted;
+        this.updateMuteState();
+    }
+
     private updateMuteState(): void {
-        this.masterGain.gain.value = this.isMuted ? 0 : 1;
+        this.masterGain.gain.value = this.isMuted || this.platformMuted ? 0 : 1;
     }
 
     async playSoundEffect(effect: SoundEffect): Promise<void> {
@@ -202,7 +209,7 @@ export class AudioManager {
     }
 
     setMasterVolume(volume: number): void {
-        this.masterGain.gain.value = this.isMuted ? 0 : Math.max(0, Math.min(1, volume));
+        this.masterGain.gain.value = this.isMuted || this.platformMuted ? 0 : Math.max(0, Math.min(1, volume));
     }
 
     setMusicVolume(volume: number): void {
