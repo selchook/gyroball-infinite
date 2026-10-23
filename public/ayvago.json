@@ -1,0 +1,55 @@
+{
+  "$schema": "https://ayvago.com/schemas/manifest.v1.json",
+  "id": "gyroballinfinite",
+  "title": {
+    "en": "Gyroball Infinite",
+    "tr": "Gyroball Infinite"
+  },
+  "description": {
+    "en": "Roll and jump across an endless stream of floating platforms. Land on colored twin tiles for bonus points; miss a platform and you fall into the void.",
+    "tr": "Sonsuz bir yüzen platform akışında yuvarlan ve zıpla. Bonus puan için renkli ikiz karolara in; bir platformu kaçırırsan boşluğa düşersin."
+  },
+  "category": "casual",
+  "tags": [
+    "3d",
+    "endless",
+    "jump"
+  ],
+  "entry": "https://gyroball-infinite.vercel.app/",
+  "orientation": "any",
+  "input": [
+    "touch",
+    "keyboard"
+  ],
+  "players": {
+    "min": 1,
+    "max": 1
+  },
+  "scoring": {
+    "metric": "points",
+    "order": "desc",
+    "format": "number",
+    "label": {
+      "en": "Score",
+      "tr": "Puan"
+    },
+    "minDurationMs": 5000,
+    "maxPerSecond": 20,
+    "maxScore": 10000000
+  },
+  "ads": {
+    "rewarded": [
+      "continue"
+    ],
+    "interstitial": [
+      "game_over"
+    ]
+  },
+  "ageRating": "3+",
+  "sdkVersion": 2,
+  "assets": {
+    "icon": "/ayvago/icon-512.png",
+    "cover": "/ayvago/cover-1920x1080.jpg"
+  },
+  "version": "1.0.0"
+}
